@@ -5,7 +5,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Profile from './pages/Profile';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import RequireAuth from './components/RequireAuth';
 import { MovieProvider } from './context/MovieContext';
@@ -18,6 +18,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/home" element={<Navigate to="/browse" replace />} />
           <Route
             path="/browse"
             element={
@@ -49,4 +50,4 @@ function App() {
   );
 }
 
-export default App
+export default App;

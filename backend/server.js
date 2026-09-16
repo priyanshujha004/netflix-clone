@@ -6,6 +6,9 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import favoriteRoutes from './routes/favoriteRoutes.js';
+import movieRoutes from './routes/movieRoutes.js';
+import genreRoutes from './routes/genreRoutes.js';
+import { generalLimiter, searchLimiter } from './middleware/rateLimiter.js';
 
 
 // Load env vars
@@ -16,27 +19,37 @@ console.log('Refresh Token :', process.env.REFRESH_TOKEN_TTL);
 const app = express();
 
 // Middleware
-const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5174')
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173')
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-app.use(cors({
-    origin(origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        return callback(new Error('Origin not allowed by CORS'));
-    },
-    credentials: true,
-}));
+    app.use(cors({
+        origin(origin, callback) {
+            // This will print the exact origin causing the crash to your terminal
+            console.log("Incoming request origin:", origin); 
+            
+            if (!origin || allowedOrigins.includes(origin)) {
+                return callback(null, true);
+            }
+            return callback(new Error(`Origin ${origin} not allowed by CORS`));
+        },
+        credentials: true,
+    }));
+    
 app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 
+// Rate Limiting
+app.use('/api/', generalLimiter);
+app.use('/api/movies/search', searchLimiter);
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/favorites', favoriteRoutes);
+app.use('/api/movies', movieRoutes);
+app.use('/api/genres', genreRoutes);
 
 
 // Base Route
