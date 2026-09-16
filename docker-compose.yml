@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - MONGO_URI=mongodb://host.docker.internal:27017/netflix-clone
+      - JWT_SECRET=supersecretjwtkey_change_in_production
+      - ACCESS_TOKEN_SECRET=supersecretjwtkey_change_in_production
+      - REFRESH_TOKEN_SECRET=supersecretjwtkey_change_in_production
+      - NODE_ENV=development
+      - COOKIE_SAME_SITE=lax
+      - CLIENT_URL=http://localhost:5173
+    # depends_on:   <-- remove this block entirely
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend

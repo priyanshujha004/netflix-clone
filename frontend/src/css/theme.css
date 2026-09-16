@@ -1,0 +1,11 @@
+/* Theme definitions for dark mode */
+:root {
+  --color-primary: #e50914;
+  --color-bg-dark: #141414;
+  --color-bg-card: #1e1e1e;
+}
+
+html.dark {
+  background-color: var(--color-bg-dark);
+  color: #ffffff;
+}

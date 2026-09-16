@@ -1,0 +1,36 @@
+App.jsx File
+
+import MovieCard  from './components/MovieCard'
+import {MovieCard} from './components/MovieCard' - Named Export Functions are imported like this.
+
+Component in React is function that always returns a JSX. 
+Returning Element should only have only one parent element, but to have multiple elements at same level we use fragments tag i.e <> to wrap all elements.
+Using a Different Component to wrap in a return body is also possible. 
+
+Props are the properties passed onto the components.
+
+Understanding Conditional Rendering
+{ movieNumber===1 ? 
+(<MovieCard movie={{title : 'Christopher Nolan' release_date : "2024" }}/>)
+: (<MovieCard movie={{title : 'Joe Rogan', release_date : "2024" }}/>)}
+
+
+Home.jsx File 
+
+{movies.map((movie)=>(
+                <MovieCard movie={movie} key={movie.id}/>
+            ))}
+.map() function iterates over the array, and pass values to function to return JSX.
+The dynamic rendering in this case always requires a key for react to know which component needs to update, even when key isn't added as properties in array. 
+
+Use of useState()
+const [searchQuery, setSearchQuery] = useState("");
+Here searchQuery defines the state, while setSearchQuery is the function used to update the state, re-render the component and change the state.
+
+<div className="movie-grid">
+            {movies.map((movie)=>(
+                movie.title.toLowerCase().startsWith(searchQuery) 
+                && (<MovieCard movie={movie} key={movie.id}/>)
+            ))}
+        </div>
+When the state changes due to setsearchQuery, it re renders the entire component. 

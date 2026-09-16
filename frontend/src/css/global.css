@@ -1,0 +1,11 @@
+@layer base {
+  html, body {
+    @apply font-sans bg-[#141414] text-white antialiased;
+  }
+  a {
+    @apply no-underline hover:underline;
+  }
+  * {
+    @apply box-border;
+  }
+}
