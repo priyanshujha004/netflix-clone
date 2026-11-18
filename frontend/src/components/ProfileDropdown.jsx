@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { UserRound, LogOut } from "lucide-react";
 
 const ProfileDropdown = () => {
   const { user, logout } = useAuth();
@@ -41,9 +42,8 @@ const ProfileDropdown = () => {
           {initial}
         </div>
         <svg
-          className={`w-4 h-4 text-gray-400 group-hover:text-white transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`w-4 h-4 text-gray-400 group-hover:text-white transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -54,27 +54,22 @@ const ProfileDropdown = () => {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-[#141414] border border-zinc-800 rounded-md shadow-2xl py-1 z-50 animate-fadeIn">
-          <div className="px-4 py-2 border-b border-zinc-800">
-            <p className="text-xs text-gray-400">Signed in as</p>
-            <p className="text-sm font-semibold text-white truncate">{user.name || user.email}</p>
-          </div>
-
+        <div className="absolute right-0 mt-2 w-30 bg-[#141414] border border-zinc-800 rounded-md shadow-2xl py-1 z-50 animate-fadeIn">
           <Link
             to="/profile"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition"
+            className="flex items-center justify-center gap-2.5 px-4 py-2.5 text-sm text-gray-200 hover:bg-zinc-800 hover:text-white transition"
           >
-            <span>👤</span> View Profile
+            <UserRound size={17} strokeWidth={1.8} />
+            <span>Profile</span>
           </Link>
-
-          <div className="border-t border-zinc-800 my-1"></div>
 
           <button
             onClick={handleLogout}
-            className="w-full text-left flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-600/10 hover:text-red-400 transition cursor-pointer"
+            className="w-full text-left flex items-center justify-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-600/10 hover:text-red-400 transition cursor-pointer"
           >
-            <span>🚪</span> Logout
+            <LogOut size={17} strokeWidth={1.8} />
+            <span>Logout</span>
           </button>
         </div>
       )}

@@ -1,18 +1,9 @@
 import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const ContentDetails = ({ movie, details, onCastClick }) => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
   if (!movie) return null;
 
   const handleActorClick = (actorName) => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
     if (onCastClick) {
       onCastClick(actorName);
     }

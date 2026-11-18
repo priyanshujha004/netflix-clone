@@ -35,10 +35,6 @@ const HeroBanner = ({ movie, details }) => {
   };
 
   const handleWatchTrailer = async () => {
-    if (!user) {
-      navigate('/login');
-      return;
-    }
     try {
       const year = (movie.release_date || movie.first_air_date || '').substring(0, 4);
       const data = await fetchMovieTrailer({

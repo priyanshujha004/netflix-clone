@@ -19,14 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Navigate to="/browse" replace />} />
-          <Route
-            path="/browse"
-            element={
-              <RequireAuth>
-                <Home />
-              </RequireAuth>
-            }
-          />
+          <Route path="/browse" element={<Home />} />
           <Route
             path="/favorites"
             element={

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">CineVault</title>
+  <desc id="desc">A red cinematic film-reel C combined with a black vault door, designed as a favicon.</desc>
+  <defs>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff3434"/>
+      <stop offset="1" stop-color="#b90018"/>
+    </linearGradient>
+  </defs>
+  <!-- Transparent background; bold silhouette for small favicon sizes. -->
+  <path d="M352 91a174 174 0 1 0 0 330l-44-57a104 104 0 1 1 0-216z" fill="url(#red)"/>
+  <!-- Film perforations -->
+  <g fill="#0b0b0d">
+    <rect x="190" y="91" width="34" height="20" rx="5" transform="rotate(-18 207 101)"/>
+    <rect x="120" y="125" width="34" height="20" rx="5" transform="rotate(-48 137 135)"/>
+    <rect x="82" y="196" width="34" height="20" rx="5" transform="rotate(-78 99 206)"/>
+    <rect x="82" y="296" width="34" height="20" rx="5" transform="rotate(78 99 306)"/>
+    <rect x="120" y="367" width="34" height="20" rx="5" transform="rotate(48 137 377)"/>
+    <rect x="190" y="401" width="34" height="20" rx="5" transform="rotate(18 207 411)"/>
+  </g>
+  <!-- Reel hub -->
+  <circle cx="226" cy="256" r="73" fill="#0b0b0d" stroke="#ef202b" stroke-width="9"/>
+  <g fill="url(#red)">
+    <circle cx="226" cy="220" r="17"/>
+    <circle cx="260" cy="256" r="17"/>
+    <circle cx="226" cy="292" r="17"/>
+    <circle cx="192" cy="256" r="17"/>
+  </g>
+  <circle cx="226" cy="256" r="9" fill="#0b0b0d"/>
+  <!-- Vault door -->
+  <rect x="322" y="112" width="128" height="288" rx="28" fill="#101014" stroke="url(#red)" stroke-width="13"/>
+  <rect x="340" y="132" width="92" height="248" rx="17" fill="#17171c" stroke="#38383f" stroke-width="4"/>
+  <circle cx="386" cy="256" r="43" fill="url(#red)"/>
+  <circle cx="386" cy="256" r="29" fill="#101014"/>
+  <g stroke="#ef202b" stroke-width="9" stroke-linecap="round">
+    <path d="M386 227v-13M386 298v-13M357 256h-13M428 256h-13"/>
+    <path d="m366 236-10-10M416 286l-10-10M406 236l10-10M356 286l10-10"/>
+  </g>
+  <circle cx="386" cy="256" r="8" fill="#ef202b"/>
+</svg>

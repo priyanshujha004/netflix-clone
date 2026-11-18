@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { searchMovies, getPopularMovies } from '../services/api';
 import { discoverMovies, searchCast } from '../api/tmdbAPI';
 import MovieCard from '../components/MovieCard';
@@ -8,6 +9,9 @@ import MovieModal from '../components/MovieModal/MovieModal';
 import FilterBar from '../components/Filters/FilterBar';
 
 function Home() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
@@ -29,11 +33,6 @@ function Home() {
     country: ''
   });
 
-  // Load Popular/Trending on Mount
-  useEffect(() => {
-    loadPopularMovies();
-  }, []);
-
   const loadPopularMovies = async () => {
     setLoading(true);
     setError(null);
@@ -50,64 +49,8 @@ function Home() {
     }
   };
 
-  // Handle Filter Change
-  const handleFilterChange = async (key, value) => {
-    let newFilters = { ...filters };
-
-    if (key === 'yearRange') {
-      newFilters.yearGte = value.gte;
-      newFilters.yearLte = value.lte;
-    } else {
-      newFilters[key] = value;
-    }
-
-    setFilters(newFilters);
-    setActorInfo(null);
-
-    // If all filters cleared, reload popular
-    if (!newFilters.genre && !newFilters.language && !newFilters.yearGte && !newFilters.country) {
-      loadPopularMovies();
-      return;
-    }
-
-    // Apply discovery filtering
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await discoverMovies({
-        genre: newFilters.genre,
-        language: newFilters.language,
-        yearGte: newFilters.yearGte,
-        yearLte: newFilters.yearLte,
-        country: newFilters.country
-      });
-      setMovies(data.results || []);
-      setActiveMode('discover');
-    } catch (err) {
-      console.error(err);
-      setError('Failed to apply filters');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResetFilters = () => {
-    setFilters({
-      genre: '',
-      language: '',
-      yearGte: '',
-      yearLte: '',
-      country: ''
-    });
-    setSearchQuery('');
-    setActorInfo(null);
-    loadPopularMovies();
-  };
-
-  // Unified Search Handler (Searches Titles & Actors simultaneously)
-  const handleUnifiedSearch = async (e) => {
-    if (e) e.preventDefault();
-    const query = searchQuery.trim();
+  const executeSearch = async (queryText) => {
+    const query = (queryText || '').trim();
     if (!query) return;
 
     setLoading(true);
@@ -172,6 +115,81 @@ function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Load Popular/Trending or incoming query on Mount / navigation
+  useEffect(() => {
+    const castParam = searchParams.get('cast') || location.state?.castQuery;
+    const searchParam = searchParams.get('search') || location.state?.searchQuery;
+
+    if (castParam) {
+      handleCastClickInModal(castParam);
+    } else if (searchParam) {
+      setSearchQuery(searchParam);
+      executeSearch(searchParam);
+    } else {
+      loadPopularMovies();
+    }
+  }, [location.search, location.state]);
+
+  // Handle Filter Change
+  const handleFilterChange = async (key, value) => {
+    let newFilters = { ...filters };
+
+    if (key === 'yearRange') {
+      newFilters.yearGte = value.gte;
+      newFilters.yearLte = value.lte;
+    } else {
+      newFilters[key] = value;
+    }
+
+    setFilters(newFilters);
+    setActorInfo(null);
+
+    // If all filters cleared, reload popular
+    if (!newFilters.genre && !newFilters.language && !newFilters.yearGte && !newFilters.country) {
+      loadPopularMovies();
+      return;
+    }
+
+    // Apply discovery filtering
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await discoverMovies({
+        genre: newFilters.genre,
+        language: newFilters.language,
+        yearGte: newFilters.yearGte,
+        yearLte: newFilters.yearLte,
+        country: newFilters.country
+      });
+      setMovies(data.results || []);
+      setActiveMode('discover');
+    } catch (err) {
+      console.error(err);
+      setError('Failed to apply filters');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      genre: '',
+      language: '',
+      yearGte: '',
+      yearLte: '',
+      country: ''
+    });
+    setSearchQuery('');
+    setActorInfo(null);
+    loadPopularMovies();
+  };
+
+  // Unified Search Handler (Searches Titles & Actors simultaneously)
+  const handleUnifiedSearch = async (e) => {
+    if (e) e.preventDefault();
+    executeSearch(searchQuery);
   };
 
   return (

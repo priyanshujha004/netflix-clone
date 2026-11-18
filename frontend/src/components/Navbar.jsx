@@ -15,7 +15,7 @@ function Navbar() {
           {/* Brand Logo - Routes to main home/browse */}
           <Link to={mainHomePath} className="flex items-center group" aria-label="Netflix Home">
             <span className="text-2xl md:text-3xl font-black tracking-tighter text-[#E50914] uppercase drop-shadow">
-              NETFLIX
+              CineVault
             </span>
           </Link>
 
