@@ -98,11 +98,11 @@ function MovieCard({ movie, onSelectMovie }) {
           {/* Action Buttons Row */}
           <div className="flex items-center justify-between gap-1">
             <div className="flex items-center gap-1.5">
-              {/* Play Button */}
+              {/* Play / Watch Button */}
               <button
                 type="button"
                 onClick={openNetflix}
-                className="bg-white hover:bg-gray-200 text-black p-2 rounded-full shadow transition transform hover:scale-110 flex items-center gap-1 text-xs font-semibold px-3 py-1.5"
+                className="bg-white hover:bg-gray-200 text-black p-1.5 rounded shadow transition transform hover:scale-105 flex items-center gap-1 text-xs font-semibold px-3 py-1.5"
                 title="Watch Now"
               >
                 <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@ function MovieCard({ movie, onSelectMovie }) {
               </button>
             </div>
 
-            {/* More Info (Modal Trigger) */}
+            {/* More Info (Modal Trigger - Not Gated) */}
             <button
               type="button"
               onClick={handleInfoClick}

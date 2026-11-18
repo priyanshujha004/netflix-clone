@@ -6,6 +6,7 @@ import Home from './Home';
 import MovieCard from '../components/MovieCard';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import MovieModal from '../components/MovieModal/MovieModal';
 
 const Landing = () => {
   const { user } = useAuth();
@@ -13,6 +14,7 @@ const Landing = () => {
   const [email, setEmail] = useState('');
   const [topMovies, setTopMovies] = useState([]);
   const [loadingMovies, setLoadingMovies] = useState(true);
+  const [selectedMovie, setSelectedMovie] = useState(null);
 
   useEffect(() => {
     if (!user) {
@@ -114,14 +116,25 @@ const Landing = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {topMovies.map((movie) => (
-              <MovieCard movie={movie} key={movie.id} />
+              <MovieCard
+                movie={movie}
+                key={movie.id}
+                onSelectMovie={(m) => setSelectedMovie(m)}
+              />
             ))}
           </div>
         )}
       </section>
+
+      {/* Movie Modal Triggered by Info Button on Landing */}
+      {selectedMovie && (
+        <MovieModal
+          movie={selectedMovie}
+          onClose={() => setSelectedMovie(null)}
+        />
+      )}
     </div>
   );
 };
 
 export default Landing;
-

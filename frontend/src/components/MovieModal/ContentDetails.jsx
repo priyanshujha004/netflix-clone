@@ -1,7 +1,22 @@
 import React from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const ContentDetails = ({ movie, details, onCastClick }) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   if (!movie) return null;
+
+  const handleActorClick = (actorName) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (onCastClick) {
+      onCastClick(actorName);
+    }
+  };
 
   const voteAvg = details?.vote_average || movie.vote_average || 0;
   const matchPercent = Math.round(voteAvg * 10);
@@ -93,7 +108,7 @@ const ContentDetails = ({ movie, details, onCastClick }) => {
             {castList.map((actor, idx) => (
               <button
                 key={actor.id || idx}
-                onClick={() => onCastClick && onCastClick(actor.name)}
+                onClick={() => handleActorClick(actor.name)}
                 className="text-gray-300 hover:text-white hover:underline text-left cursor-pointer"
               >
                 {actor.name}

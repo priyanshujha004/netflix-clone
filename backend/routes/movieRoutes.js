@@ -42,6 +42,65 @@ router.get('/trending', async (req, res) => {
   }
 });
 
+// GET /api/movies/trailer?title={title}&year={year}&id={id}
+router.get('/trailer', async (req, res) => {
+  try {
+    const { title, year, id } = req.query;
+
+    if (!id && !title) {
+      return res.status(400).json({ error: 'Movie title or ID is required' });
+    }
+
+    const cacheKey = `trailer:${id || ''}:${title || ''}:${year || ''}`;
+    const cached = getCached(cacheKey);
+    if (cached) return res.json(cached);
+
+    let targetMovieId = id;
+
+    // Resolve movie ID if not directly provided
+    if (!targetMovieId) {
+      let searchUrl = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`;
+      if (year) searchUrl += `&primary_release_year=${encodeURIComponent(year)}`;
+
+      const searchRes = await fetch(searchUrl);
+      if (!searchRes.ok) throw new Error(`TMDB search status ${searchRes.status}`);
+      const searchData = await searchRes.json();
+
+      if (!searchData.results || searchData.results.length === 0) {
+        return res.status(404).json({ error: 'Movie not found' });
+      }
+      targetMovieId = searchData.results[0].id;
+    }
+
+    // Fetch movie videos
+    const videoRes = await fetch(`${TMDB_BASE_URL}/movie/${targetMovieId}/videos?api_key=${TMDB_API_KEY}`);
+    if (!videoRes.ok) throw new Error(`TMDB videos status ${videoRes.status}`);
+    const videoData = await videoRes.json();
+
+    const results = videoData.results || [];
+    // Prioritize official YouTube trailer
+    const trailer =
+      results.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ||
+      results.find((v) => v.site === 'YouTube' && (v.type === 'Teaser' || v.type === 'Clip')) ||
+      results.find((v) => v.site === 'YouTube');
+
+    if (!trailer || !trailer.key) {
+      return res.status(404).json({ error: 'Trailer not found' });
+    }
+
+    const payload = {
+      videoKey: trailer.key,
+      youtubeUrl: `https://www.youtube.com/watch?v=${trailer.key}`
+    };
+
+    setCache(cacheKey, payload);
+    res.json(payload);
+  } catch (error) {
+    console.error('Error fetching movie trailer:', error.message);
+    res.status(500).json({ error: 'Failed to fetch trailer' });
+  }
+});
+
 // GET /api/movies/discover
 router.get('/discover', async (req, res) => {
   try {

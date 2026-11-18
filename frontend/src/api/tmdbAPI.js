@@ -175,3 +175,43 @@ export const searchMoviesByTitle = async (query) => {
     return [];
   }
 };
+
+// 7. Fetch Movie Trailer
+export const fetchMovieTrailer = async ({ id, title, year }) => {
+  try {
+    const params = {};
+    if (id) params.id = id;
+    if (title) params.title = title;
+    if (year) params.year = year;
+
+    const response = await axiosInstance.get('/movies/trailer', { params });
+    return response.data;
+  } catch (err) {
+    console.warn('Backend Trailer Request Failed, Trying Fallback', err.message);
+    let targetId = id;
+    if (!targetId && title) {
+      let searchUrl = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(title)}`;
+      if (year) searchUrl += `&primary_release_year=${encodeURIComponent(year)}`;
+      const sRes = await fetch(searchUrl);
+      const sData = await sRes.json();
+      if (sData.results && sData.results.length > 0) {
+        targetId = sData.results[0].id;
+      }
+    }
+    if (!targetId) throw new Error('Trailer Not Found');
+
+    const vRes = await fetch(`${TMDB_BASE_URL}/movie/${targetId}/videos?api_key=${TMDB_API_KEY}`);
+    const vData = await vRes.json();
+    const results = vData.results || [];
+    const trailer =
+      results.find((v) => v.site === 'YouTube' && v.type === 'Trailer') ||
+      results.find((v) => v.site === 'YouTube');
+
+    if (!trailer || !trailer.key) throw new Error('Trailer Not Found');
+
+    return {
+      videoKey: trailer.key,
+      youtubeUrl: `https://www.youtube.com/watch?v=${trailer.key}`
+    };
+  }
+};
